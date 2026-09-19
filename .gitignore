@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated demo outputs
+artifacts/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Research data: deliberately excluded from version control
+data/*
+!data/README.md
+*.dcm
+*.e2e
+*.E2E
+*.nii
+*.nii.gz
+*.xlsx
+*.xls
+*.parquet
+*.h5
+*.hdf5
+*.ckpt
+*.pth
+*.pt
+*.joblib
+
+# LaTeX build artefacts (the finished public PDF is tracked)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.toc
+tmp/

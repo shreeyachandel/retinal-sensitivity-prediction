@@ -1,0 +1,293 @@
+\chapter{Methodology}
+\label{chap:methods}
+
+% -----------------------------------------------------------------------
+\section{Study design and analytical principles}
+\label{sec:design}
+
+The thesis was designed as an internally validated study of spatially matched OCT and MAIA microperimetry examinations from patients with Usher syndrome.
+
+The project was guided by the following principles:
+
+\begin{enumerate}
+  \item \textbf{Pointwise regression endpoint.} The task was treated as supervised, instance-level regression. Each instance was a numbered MAIA Point 1--37, and the primary endpoint was the continuous retinal sensitivity measured at that point in decibels (dB).
+  \item \textbf{One functional point as one observation.} A-scans and neighbouring B-scans describing the same MAIA point were combined into one point-level representation.
+  \item \textbf{Outcome-independent representation construction.} The structural representations were made without using sensitivity values. Sensitivity was joined only after the representation had been fixed.
+  \item \textbf{Participant-level generalisation.} Several points, eyes and visits could come from one participant. Validation was therefore grouped by participant, which prevented data leakage between the training and held-out sets.
+\end{enumerate}
+
+The work was divided into two planned analyses. The \emph{primary} analysis retained all eligible point-level observations and used fixed location and image-derived OCT representations. The \emph{secondary} analysis used the smaller subset with human-verified boundary features. This made comparison of interpretable local structural features with boundary-aligned image representations possible. Results are reported separately for each cohort.
+
+For the purpose of this thesis, the workflow can be understood as six high-level analytical stages, as highlighted in Figure~\ref{fig:method-workflow}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.92\textwidth,height=0.50\textheight,keepaspectratio]{figure_methodology_workflow.pdf}
+  \caption{High-level analytical workflow. Following data preparation, registration and pointwise alignment, the workflow separates into the primary full-cohort image analysis and the secondary boundary-informed analysis. The two branches are then evaluated using participant-grouped model ladders and out-of-fold predictions.}
+  \label{fig:method-workflow}
+\end{figure}
+
+% -----------------------------------------------------------------------
+\section{Data sources, cohort and outcome}
+\label{sec:cohort}
+
+The data were obtained from retinal imaging and microperimetry examinations collected from patients with Usher syndrome. Each MAIA examination provided a fundus image showing the test grid and a measurement of retinal sensitivity in decibels (dB) at each test location. The corresponding OCT examination provided a volume of cross-sectional retinal B-scans, an associated scanning laser ophthalmoscopy (SLO) image and the spatial information needed to locate the scans within the fundus image. Together, these examinations provided a functional measurement from MAIA and a structural measurement from OCT for the same eye and visit.
+
+Before analysis, the source records were de-identified and organised using study-specific patient, eye and visit labels. The usable analysis data consisted of the MAIA sensitivity values and fundus images, OCT volumes and SLO images, scan geometry, and the saved registration and quality-control records. The de-identification process allowed the data to be analysed at patient and eye-visit level without including direct patient identifiers in the working dataset.
+
+Seventy-nine candidate same-visit eye pairs from 23 patients were identified. An eye-visit was included in the primary cohort when it contained a usable MAIA examination, matched OCT volume and SLO image, and an approved MAIA--OCT/SLO registration. One eye-visit was excluded following review because the spatial correspondence between the MAIA test locations and OCT volume was not sufficiently reliable.
+
+The final primary cohort included 22 patients, 78 accepted eye-visits and 2,886 pointwise observations. Each eye-visit contributed the 37 numbered MAIA Points 1--37. Sensitivity was analysed as a continuous outcome, including observed $-1$~dB values at the device floor.
+
+\begin{table}[htbp]
+\centering
+\caption{Composition of the primary and secondary analysis cohorts.}
+\label{tab:cohort}
+\begin{tabularx}{\textwidth}{Xrr}
+\toprule
+Item & Primary cohort & Secondary cohort \\
+\midrule
+Patients & 22 & 22 \\
+Accepted eye-visits & 78 & 50 \\
+Baseline / year-one eye-visits & 41 / 37 & 13 / 37 \\
+Pointwise observations (MAIA Points 1--37) & 2,886 & 1,850 \\
+Points per accepted eye-visit & 37 & 37 \\
+Sensitivity floor ($-1$~dB) observations & 533 & 278 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The secondary cohort was limited to eye-visits with source-mapped, human-verified B0--B4 boundary information that could be matched to the accepted OCT volume and passed structural, mapping and placement checks. Fifty eye-visits met these criteria, giving the same 22 patients and 1,850 pointwise observations.
+
+% -----------------------------------------------------------------------
+\section{MAIA--OCT/SLO registration and quality control}
+\label{sec:registration}
+
+\subsection{Automatic transform estimation}
+
+The MAIA fundus image was aligned to the corresponding OCT/SLO image. Both images were standardised to a common $512\times512$ display grid for registration. They were then processed to reduce broad illumination differences and emphasise vessel-like dark features. Image correlation was used to estimate the alignment.
+
+Several starting positions were tested because the MAIA and OCT/SLO images can have different fields of view. Similarity registration was run at five scales (0.70, 0.80, 0.90, 1.00 and 1.10) and three rotation angles ($-6^{\circ}$, $0^{\circ}$ and $+6^{\circ}$), giving fifteen starting points for each eye-visit. Each run used image correlation, linear interpolation and a three-level image pyramid. The candidate with the best final metric was refined using an affine transform. The resulting transform was checked to ensure that it was geometrically plausible. Registration was implemented with SimpleITK \citep{Langlo2025}, which provides an established framework for multi-resolution image registration and applying transformations between images acquired using different modalities. The automatic registration provided a candidate alignment for human review, which determined whether the alignment was accepted.
+
+\subsection{Human visual quality control and final use}
+
+Each transform was saved with its warp images, overlays, transform files and registration metadata. The overlays were reviewed for vessel alignment, image doubling and anatomical plausibility. The accepted transform for each eye-visit was then recorded as a governed input. Borderline cases retained their review status in the provenance record. Eye-visits without acceptable spatial correspondence were excluded.
+
+This combination of automatic registration and visual review was important because a transform can have a good global image score while still placing a local MAIA point in the wrong retinal position. Similarly, a globally acceptable transform does not show which B-scan or A-scan should represent an individual functional point. That question was addressed by the geometric mapping described in Section~\ref{sec:footprint}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{figure_registration_qc_public.png}
+  \caption{Registration and point-alignment quality-control schematic using synthetic coordinates. The left panel represents a functional test grid; the right panel illustrates the registered grid and candidate B-scan geometry.}
+  \label{fig:registration-qc}
+\end{figure}
+
+% -----------------------------------------------------------------------
+\section{Point alignment and physical sampling}
+\label{sec:footprint}
+
+\subsection{Point-to-B-scan mapping}
+
+The approved MAIA-to-OCT/SLO transform was applied to each numbered MAIA Point~1--37. For every transformed point, the three geometrically nearest OCT B-scan line segments were identified, and the projected along-scan coordinate, distance to the scan, B-scan identity and scan geometry were recorded. The choice of B-scans was based on geometry alone, without using OCT-derived features or sensitivity values.
+
+Three B-scans were used so that the structure around a functional point could be represented from several immediately neighbouring cross-sections, limiting the influence of a small registration error, scan-placement variation or local imaging artefact in any one scan, while keeping the structural information local to the same MAIA location. Using substantially more scans would have made the representation less specific to the pointwise sensitivity measurement. The three selected scans were therefore treated as repeated structural views of one sensitivity label and combined before modelling, rather than as three independent labelled observations.
+
+\subsection{Footprint anchor and local input definition}
+
+The approximately 100~$\mu$m diameter of the MAIA stimulus was used to define the physical footprint around each registered point. For each selected B-scan, the registered MAIA point provided an along-scan coordinate. Scale X was used to express the $\pm50~\mu$m footprint in native image columns, and one centred native A-scan position within this interval was retained. This gave one local image anchor on each of the three B-scans and aligned the structural representation with the physical area represented by the functional measurement.
+
+The retained A-scan position then centred a branch-specific OCT context image. The primary representation used a 750~$\mu$m horizontal context crop. The secondary boundary-aligned representation used a 300~$\mu$m horizontal context crop, with its vertical extent defined relative to the B0--B4 complex as described in Section~\ref{sec:representations}. The volume-specific horizontal scale preserved the intended physical extent across OCT volumes with different resolutions. Each crop was then resized to the input dimensions required by the feature extractor.
+
+\subsection{Point-level representation and unit of modelling}
+
+The analysis preserved the following hierarchy:
+
+\begin{table}[htbp]
+\centering
+\caption{Hierarchical structure of one modelling observation.}
+\label{tab:hierarchy}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}X}
+\toprule
+Level & Meaning \\
+\midrule
+MAIA point & One sensitivity label in dB (the outcome) \\
+B-scan & One of the three nearest registered scans \\
+Local OCT context & One branch-specific context image centred on the selected native A-scan position \\
+Model row & One structural representation per MAIA point \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+One embedding was extracted from each of the three local OCT contexts. These three embeddings were combined to produce one point-level representation for the corresponding MAIA sensitivity value. The neighbouring B-scans were therefore used as repeated structural views of the same point, without increasing the number of functional outcomes or treating them as independent observations.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\linewidth]{figure_100um_sampling_primary.png}
+  \caption{Footprint-aware pointwise OCT representation. One centred native A-scan position is selected within the approximately 100~$\mu$m MAIA footprint on each of the three nearest B-scans. A branch-specific encoder context is then centred on each selected position before the three structural views are combined.}
+  \label{fig:footprint}
+\end{figure}
+
+% -----------------------------------------------------------------------
+\section{OCT representations and feature construction}
+\label{sec:representations}
+
+Representation construction began once visit matching, registration, point projection, B-scan selection and footprint-based anchor selection had been completed. Because these spatial operations had already defined the local OCT input for each MAIA point, feature extraction could proceed on a consistent set of registered retinal contexts. The resulting representations were checked for identity, coverage and finite values before the corresponding sensitivity values were joined.
+
+\subsection{Primary full-cohort image representation}
+
+The primary branch included every accepted point and therefore used no boundary files or anatomical layer assignments. For each point, one centred native A-scan position was selected within the 100~$\mu$m footprint on each of the three selected B-scans. A 750~$\mu$m horizontal OCT context image was then centred on each position and passed to RETFound \citep{Zhou2023RETFound}, so that the representation captured structural information from the retinal region surrounding the functional measurement.
+
+RETFound was used as a frozen feature extractor and evaluated in this Usher syndrome cohort alongside the prespecified reference models. The reasons for using a retinal foundation model are discussed in Chapter~\ref{chap:background}. As each point was represented on three B-scans, the resulting embeddings were summarised by their mean and population standard deviation, producing one $2{,}048$-dimensional point-level representation. This gave 8,658 encoder positions ($2{,}886$ points $\times$ 3 scans) and a final $2{,}886 \times 2{,}048$ representation for the primary cohort. Location was retained as a separate block using normalised eccentricity and the sine and cosine of polar angle, which represented the circular geometry of the test grid without an angular discontinuity.
+
+\subsection{Secondary boundary-informed representation}
+
+The secondary branch included observations with source-mapped B0--B4 curves that passed structural, mapping and gross-placement checks; these source labels were retained throughout the analysis.
+
+Two complementary structural inputs were constructed for this branch:
+\begin{itemize}[nosep]
+  \item \textbf{Boundary features}, which summarised local distances and their variability within the measurement footprint; and
+  \item \textbf{boundary-aligned RETFound features}, which represented the OCT image relative to the B0--B4 complex.
+\end{itemize}
+
+Four adjacent intervals were calculated from the B0--B4 curves within the 100~$\mu$m footprint. Their pooled means in $\mu$m, within-footprint standard deviations and between-B-scan mean standard deviations gave twelve boundary-derived features per point. These features described variation across the footprint and three selected scans, whereas the boundary-aligned RETFound representation used one centred A-scan anchor on each B-scan.
+
+For the boundary-aligned image representation, OCT contexts were cropped relative to the B0--B4 complex, with fixed 50~$\mu$m margins above and below the complex and a 300~$\mu$m horizontal context. Each crop retained its physical aspect ratio before passing through the frozen RETFound encoder, and the three B-scan embeddings were then combined using the same point-level pooling rule.
+
+\begin{table}[htbp]
+\centering
+\caption{Predictor representations used in each analysis branch.}
+\label{tab:representations}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}p{0.20\textwidth}p{0.22\textwidth}X}
+\toprule
+Representation & Cohort & Input & Purpose \\
+\midrule
+Location & Primary and secondary & Eccentricity and polar position & Transparent spatial reference \\
+RETFound (standard) & Primary & Three local OCT contexts (one position on each selected B-scan) & Image-derived structural information \\
+B0--B4 boundary features & Secondary only & Four adjacent neutral intervals and variability (12 features) & Interpretable structural branch \\
+Boundary-aligned RETFound & Secondary only & OCT context aligned to B0--B4 complex & Image information relative to local boundaries \\
+Fusion & Secondary only & Location, B0--B4 features and RETFound & Assessment of complementary information \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% -----------------------------------------------------------------------
+\section{Model development and comparators}
+\label{sec:models}
+
+The model set progressed from simple references to increasingly rich structural inputs:
+
+\begin{itemize}[nosep]
+  \item \textbf{Reference and location models} provided non-OCT benchmarks.
+  \item \textbf{OCT and fusion models} tested structural information separately and in combination.
+\end{itemize}
+
+\subsection{Ridge regression and the choice of model family}
+
+Ridge regression was used as the main fitted model because the independent sample consisted of 22 participants, even though the dataset contained 2,886 correlated point rows. A more flexible model could therefore learn patterns that were specific to the participants in this cohort, whereas ridge regression provides shrinkage for correlated predictors while remaining relatively easy to interpret. Within each outer training set, the 2,048-dimensional RETFound vector was standardised with the training-fold scaler and reduced using principal component analysis (PCA). PCA was fitted on training data only, with whitening and a fixed random state, and the number of retained components was selected from $\{8, 16, 32, 64, 128\}$ using grouped inner-fold mean absolute error. The ridge penalty was selected from $\alpha \in \{0.1, 1, 10, 100, 1000\}$ using the same criterion. Location features were standardised in the same way but were not reduced with PCA because this block contained only three prespecified variables. Predictions were retained on the scale produced by the fitted model.
+
+\subsection{Primary model ladder}
+
+Five models were specified for the primary analysis. The training-mean null model showed the error obtained when every held-out point was assigned the mean sensitivity of the training participants, while the fixed $-1$~dB reference provided a simple non-learned comparison at the measurement floor. The location-only ridge model then measured the information available from retinal position without OCT. RETFound-only and location-plus-RETFound ridge models assessed the image-derived representation without and with explicit location information; together, these comparisons indicated whether image-derived information improved prediction beyond retinal position.
+
+\begin{table}[htbp]
+\centering
+\caption{Primary model ladder and the inferential question addressed by each model.}
+\label{tab:primary-ladder}
+\begin{tabularx}{\textwidth}{p{0.33\textwidth}X}
+\toprule
+Model & Purpose \\
+\midrule
+Training-mean null & Reference error when prediction uses only the training-participant mean \\
+Fixed $-1$~dB reference & Non-learned sensitivity-floor reference \\
+Location-only ridge & Information from point location without OCT \\
+RETFound-only ridge & Frozen image representation without explicit location predictors \\
+Location-plus-RETFound ridge & Primary combined model; added value of OCT beyond location \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Secondary model ladder}
+
+The secondary analysis used the same separation of training and test participants, but was carried out on the subset with boundary information. It therefore expanded the model set to nine models. Ordinary linear regression provided a simple, interpretable boundary baseline, while ridge regression considered the same features with shrinkage for correlated intervals and variability measures. Random forest was included as a non-linear comparison because the relation between local structural measurements and sensitivity might not be additive; it used 500 trees during inner tuning and 1,000 trees for the final selected fit. Boundary-aligned RETFound then tested image-derived information alongside the engineered structural summary, and the fusion model assessed whether location, boundary features and image information were complementary.
+
+\begin{table}[htbp]
+\centering
+\caption{Secondary model ladder and the inferential question addressed by each model.}
+\label{tab:secondary-ladder}
+\begin{tabularx}{\textwidth}{p{0.38\textwidth}X}
+\toprule
+Model & Purpose \\
+\midrule
+Training-mean null; fixed $-1$~dB reference & Learned and non-learned baselines under the same held-out participants \\
+Location-only ridge & Contribution of retinal position alone \\
+Boundary-only linear regression & Simplest interpretable linear test of the 12 neutral boundary predictors \\
+Boundary-only ridge & Same structural block with shrinkage for correlated features \\
+Location-plus-boundary ridge & Early fusion; incremental structural value beyond location \\
+Location-plus-boundary random forest & Flexible non-linear test for interactions missed by ridge \\
+Boundary-aligned RETFound ridge & Image features at boundary-aligned positions without location or boundary predictors \\
+Location-plus-boundary RETFound ridge & Early fusion of location, boundary features and image representation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% -----------------------------------------------------------------------
+\section{Validation, evaluation and uncertainty}
+\label{sec:validation}
+
+\subsection{Participant-grouped nested validation}
+
+Five outer folds were fixed using participant identifier as the allocation unit. The deterministic allocation aimed to balance the numbers of accepted eye-visits and visit timepoints, without using sensitivity values, OCT images, OCT features or registration-quality scores. All eyes, visits, MAIA points, B-scan assignments and representations belonging to one participant were placed in the same outer fold.
+
+For each outer fold, the held-out participants were used only for the final prediction. The remaining participants supplied the training data for model fitting and configuration decisions. Splitting at point level could place correlated observations, fellow-eye data or repeat visits from one participant in both training and testing. This would make the estimate of performance appear better than it would be for a new participant.
+
+Within each outer training set, four grouped inner folds were used to select model hyperparameters. The final model for that outer split was then fitted using all outer-training participants and the selected configuration. It was used once to predict the held-out participants. Repeating this procedure across the five outer folds gave one out-of-fold prediction for every point and model. Imputation, scaling, PCA transformation, ridge fitting and hyperparameter selection were all restricted to the relevant training data. The completed primary run contained 14,430 prediction rows: 2,886 points for each of the five models.
+
+\subsection{Evaluation metrics}
+
+All performance measures were calculated from the out-of-fold predictions. Let $\hat{y}_i$ denote the predicted sensitivity and $y_i$ the observed sensitivity for point $i$. Mean absolute error (MAE) is
+
+\begin{equation}
+  \mathrm{MAE} = \frac{1}{n}\sum_{i=1}^{n}\left|\hat{y}_i - y_i\right|,
+\end{equation}
+
+and root mean squared error (RMSE) is
+
+\begin{equation}
+  \mathrm{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(\hat{y}_i - y_i\right)^2}.
+\end{equation}
+
+MAE was used as the primary ranking metric because it is expressed directly in dB and is less affected by a small number of large errors than RMSE. RMSE was reported alongside it to show the effect of larger deviations.
+
+For the Bland--Altman analysis, the difference was defined as predicted minus observed sensitivity, $d_i = \hat{y}_i - y_i$. A positive bias therefore means that the predictions are higher than the observations. Bias is the mean difference, and the 95\% limits of agreement are calculated as the bias $\pm 1.96$ times the standard deviation of the differences. Calibration intercept and slope were obtained by regressing observed sensitivity on predicted sensitivity. $R^2$ was also calculated as a supplementary descriptive measure. The role and limitation of each metric are summarised in Table~\ref{tab:metrics}.
+
+\begin{table}[htbp]
+\centering
+\caption{Evaluation metrics, their primary roles and what each cannot support on its own.}
+\label{tab:metrics}
+\begin{tabularx}{\textwidth}{p{0.27\textwidth}p{0.30\textwidth}X}
+\toprule
+Metric & Role & Limitation \\
+\midrule
+MAE (dB) & Primary ranking; absolute pointwise error & Does not reveal direction of error \\
+RMSE (dB) & Sensitivity to larger errors & Dominated by outliers; not in dB of clinical intuition \\
+Bland--Altman bias (dB) & Average directional error & Does not capture individual-point scatter \\
+95\% limits of agreement (dB) & Individual-point agreement range & Cannot establish clinical interchangeability alone \\
+Calibration intercept / slope & Systematic over- or under-prediction & Requires error and agreement to interpret \\
+$R^2$ & Supplementary explained variance & A favourable value can coexist with wide pointwise limits \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Uncertainty and prespecified descriptive strata}
+
+Uncertainty intervals were obtained with 5,000 participant-level bootstrap resamples. In each draw, participants were sampled with replacement and all of their associated points and visits were included with the corresponding multiplicity. This preserved the clustered structure of the data, which would be lost in a point-level bootstrap. The 2.5th and 97.5th percentiles of the bootstrap distribution formed the reported 95\% interval.
+
+Four descriptive strata were specified in advance: baseline visit, year-one visit, observations at the $-1$~dB device floor and observations above the floor. These strata show where prediction errors occurred and how the floor affected interpretation. They are not additional primary endpoints, and differences between strata are not treated as confirmatory subgroup effects.
+
+% -----------------------------------------------------------------------
+\section{Data governance and ethical considerations}
+\label{sec:ethics}
+
+This study used pre-existing, de-identified OCT and MAIA microperimetry data. The records were organised using study-specific identifiers, and direct identifiers were not included in the analytical dataset or thesis materials. No new data were collected for this project, and the analysis did not inform clinical decisions.
+
+The model outputs are research estimates of pointwise retinal sensitivity. They are intended to support the evaluation of OCT--function relationships in this cohort and require further validation before any clinical use could be considered.

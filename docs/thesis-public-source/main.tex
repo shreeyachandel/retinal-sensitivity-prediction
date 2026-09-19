@@ -1,0 +1,81 @@
+% Master's thesis manuscript
+% Compile from this directory with: pdflatex main.tex
+% Bibliography is consolidated from references.bib using BibTeX.
+\documentclass[12pt,a4paper,oneside]{report}
+
+\input{thesis-settings}
+
+\begin{document}
+
+\pagenumbering{gobble}
+\input{titlepage}
+\clearpage
+\pagenumbering{roman}
+
+\clearpage
+\phantomsection
+\begin{center}
+  {\normalfont\bfseries\fontsize{18}{22}\selectfont Abstract\par}
+\end{center}
+\addcontentsline{toc}{chapter}{Abstract}
+\begin{center}
+  \begin{minipage}{0.88\textwidth}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{0pt}
+    \input{abstract}
+  \end{minipage}
+\end{center}
+
+\clearpage
+\phantomsection
+\begin{center}
+  {\normalfont\bfseries\fontsize{18}{22}\selectfont Acknowledgements\par}
+\end{center}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+\begin{center}
+  \begin{minipage}{0.88\textwidth}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{0pt}
+    \input{acknowledgements}
+  \end{minipage}
+\end{center}
+
+\clearpage
+\phantomsection
+\begin{center}
+  {\normalfont\bfseries\fontsize{18}{22}\selectfont Declaration\par}
+\end{center}
+\addcontentsline{toc}{chapter}{Declaration}
+\input{declaration}
+
+\begingroup
+\singlespacing
+\tableofcontents
+\endgroup
+\listoffigures
+\listoftables
+
+\clearpage
+\pagenumbering{arabic}
+
+\input{chapters/01_introduction}
+\input{chapters/02_background}
+\input{chapters/03_methods}
+\input{chapters/04_results}
+\input{chapters/05_discussion}
+\input{chapters/06_conclusion}
+\input{chapters/07_future_work}
+
+\appendix
+\renewcommand{\chaptername}{Appendix}
+\input{appendices/a_reproducibility}
+\input{appendices/b_supplementary_methods}
+
+\clearpage
+\renewcommand{\bibname}{References}
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+\end{document}

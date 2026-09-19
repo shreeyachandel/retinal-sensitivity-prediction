@@ -1,0 +1,99 @@
+\chapter{Background and Literature Review}
+\label{chap:background}
+
+This chapter establishes the biological and clinical basis of the project before reviewing the evidence for estimating retinal function from structural imaging. The review concentrates on work that directly informed the present study: structure--function relationships in Usher syndrome and inherited retinal degeneration, prediction of retinal sensitivity in related retinal diseases, and methodological decisions that become important when the number of participants is small.
+
+\section{Review method}
+
+The structured literature review covered publications from 2014 to 2026. Five sources were selected from an initial list of thirteen because they provided complementary coverage of clinical ophthalmology and computational imaging: PubMed, Embase through Ovid, Scopus, IEEE Xplore and the ACM Digital Library. Search terms were organised into three groups. The disease group included Usher syndrome, \textit{USH2A}, retinitis pigmentosa and inherited retinal degeneration; the measurement group included OCT, microperimetry, retinal sensitivity, fundus autofluorescence and structure--function; and the methods group included machine learning, deep learning, regression, transfer learning and common evaluation measures. Separate searches for Macular Telangiectasia and age-related macular degeneration were used to identify the closest methodological comparators, and backward citation searching from the RUSH2A and ReSensNet papers was used to find earlier work that did not use current machine-learning terminology.
+
+The review recorded 785 papers within the combined search scope, from which 14 studies were retained after screening. The eligibility criteria applied during screening are summarised in Table~\ref{tab:review-criteria}.
+
+\begin{table}[H]
+\centering
+\caption{Inclusion and exclusion criteria used in the structured literature review.}
+\label{tab:review-criteria}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+Decision & Criterion \\
+\midrule
+Inclusion & Studies of retinal structure--function relationships in Usher syndrome, retinitis pigmentosa or inherited retinal degeneration, together with transferable retinal comparators including Macular Telangiectasia, age-related macular degeneration, geographic atrophy and diabetic macular oedema. \\
+Inclusion & Studies using OCT, fundus autofluorescence or related structural retinal imaging to report quantitative functional outcomes, biomarker correlations or sensitivity-related endpoints. \\
+Inclusion & Machine-learning, deep-learning or statistical studies reporting quantitative performance, and foundational clinical studies that informed model design, endpoint selection or characterisation of the target dataset. \\
+Inclusion & Methodological studies relevant to small retinal-imaging datasets, including transfer learning, self-supervised learning, segmentation and measurement-reliability analysis. \\
+Exclusion & Reviews, systematic reviews, opinion articles or conference abstracts without full peer-reviewed methods. \\
+Exclusion & Studies limited to retinal conditions outside the defined scope, such as glaucoma or non-macular diabetic retinopathy, without a transferable structure--function method. \\
+Exclusion & Studies without quantitative outcomes, or with insufficient methodological detail for meaningful quality assessment. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The retained papers were assessed for study design, sample selection, imaging and registration, validation, reported metrics, ethics and generalisability.
+
+\section{Biological and clinical context}
+
+\subsection{Usher syndrome and retinal degeneration}
+
+Usher syndrome is a genetically diverse, usually autosomal-recessive condition that combines sensorineural hearing loss with retinitis pigmentosa; vestibular function may also be affected \cite{Mathur2015,Whatley2020}. Variants in \textit{USH2A} are an important cause of Usher syndrome type 2 and may also cause non-syndromic autosomal-recessive retinitis pigmentosa \cite{Toualbi2020,Lad2022}.
+
+Vision depends on rod and cone photoreceptors converting light into neural signals. Rods support low-light and peripheral vision, whereas cones are more important for detailed central and colour vision \cite{Salesse2017}. Retinitis pigmentosa often affects rods first. Night vision and the peripheral visual field may therefore worsen while central vision remains useful.
+
+Usher proteins help to maintain photoreceptor structure and the movement of molecules between the inner and outer segments. When these processes are disrupted, photoreceptor function and structure can progressively deteriorate \cite{Whatley2020,Mathur2015}. The uneven pattern of degeneration also explains why central visual acuity alone provides an incomplete account of vision. Measurements taken across different retinal locations are needed to describe both the remaining structure and the corresponding local function.
+
+\subsection{OCT markers of remaining photoreceptor structure}
+
+OCT uses low-coherence interferometry to form non-invasive depth profiles of tissue. A single axial reflectivity profile is an A-scan; adjacent A-scans form a cross-sectional B-scan, and a set of neighbouring B-scans forms a retinal volume \cite{Huang1991,Langlo2025}. The resulting image is an optical representation rather than a histological section, but it permits retinal layers and reflective bands to be examined in vivo.
+
+The outer retina contains several features relevant to inherited degeneration. The ONL contains the photoreceptor cell bodies, while the ellipsoid zone (EZ) is a reflective OCT band associated with the photoreceptor inner-segment region. The term ``zone'' is deliberately cautious because the precise anatomical sources of some OCT bands are not completely settled \cite{Staurenghi2014,Tao2016}. Continuity or extent of the EZ and preservation of the ONL can therefore indicate remaining photoreceptor structure, but a visible feature is not itself a measurement of vision. The boundary values supplied for the secondary analysis are consequently retained as the neutral labels B0--B4; anatomical names are not assigned without independent verification of their source definitions.
+
+\section{OCT and microperimetry as complementary measurements}
+
+Fundus-controlled perimetry, commonly called microperimetry, measures light sensitivity at defined retinal locations while imaging and tracking the fundus. Sensitivity is reported in decibels, so the resulting map describes local function that may not be apparent from a central acuity measurement \cite{Pfau2021Microperimetry}. Its spatial resolution is particularly useful in inherited retinal degeneration, but the result remains dependent on the participant seeing and responding to the stimulus. Fixation, attention, fatigue, learning and disease severity can all influence repeated measurements.
+
+This uncertainty is greater for individual locations than for an average across the test grid. In the REPEAT study of retinitis pigmentosa, the reported pointwise coefficient of repeatability was approximately 8.6--10.2 dB, whereas repeatability for mean sensitivity was approximately 0.9--2.4 dB \cite{Karuntu2025}. These values cannot be transferred directly to every device, protocol or cohort, but they show why a pointwise prediction error should not be interpreted in the same way as an error for an eye-level mean. Values at the device floor also require separate attention because different levels of severe loss can be recorded at the same lower limit.
+
+OCT and microperimetry thus provide different information: OCT records structure objectively and rapidly, whereas microperimetry records a psychophysical response. To analyse their relationship, a functional test point must first be registered to the corresponding retinal position in the OCT reference image. An incorrect transform, or the use of an OCT region much larger than the stimulus location, may assign unrelated structure to the same sensitivity label. Spatial registration and local sampling are therefore part of the scientific validity of a structure--function model, rather than simply preprocessing details.
+
+\section{Disease-specific structure--function evidence}
+
+The strongest direct evidence came from studies of \textit{USH2A}-related degeneration. In the RUSH2A natural-history cohort, Lad et al. analysed 127 participants, including 80 with Usher syndrome type 2 and 47 with non-syndromic autosomal-recessive retinitis pigmentosa; 93 participants also had microperimetry \cite{Lad2022}. Longer disease duration was associated with a smaller intact EZ area and lower mean sensitivity, while larger EZ area and central retinal thickness were associated with better function. The review recorded a correlation of $r=0.68$ between EZ area and mean sensitivity. This provides disease-specific evidence that preserved structure and function are related, but it remains a cohort-level association rather than a test of pointwise prediction in unseen participants.
+
+Gill et al. reported that EZ width explained a substantial proportion of variation in visual acuity in a smaller \textit{USH2A} cohort ($R^2=0.717$), again supporting the importance of outer-retinal preservation while using a different functional outcome \cite{Gill2022}. Charng et al. examined edge-of-scotoma sensitivity as a possible longitudinal endpoint and found it more responsive to change than several broader measures in a small cohort \cite{Charng2020}. Together, these studies justify examining local structural information, but they do not establish that an OCT model will estimate MAIA sensitivity accurately, nor that a prediction can replace the functional test.
+
+\section{Prediction studies in related retinal diseases}
+
+\subsection{Interpretable statistical models}
+
+Studies in age-related macular degeneration provide useful methodological precedents because they aligned local OCT or fundus features with pointwise sensitivity. Wu et al. used graded microstructural features and stepwise regression, reporting a strong relationship between predicted and measured sensitivity, although the expert grading limits scalability \cite{Wu2014}. Pfau et al. used random forests with OCT thickness, intensity and fundus features in geographic atrophy. Under patient-wise leave-one-out validation, their imaging-only model had an MAE of 4.64 dB, which improved to 2.89 dB when limited patient-specific calibration data were included; ONL-related features were among the most important predictors \cite{Pfau2020}. A related study in neovascular age-related macular degeneration reported a calibrated MAE of 2.80 dB \cite{vonderEmde2019}. These results demonstrate that relatively small, structured models can extract interpretable information, but patient-specific calibration changes the question from prediction for a wholly unseen participant.
+
+\subsection{Deep learning and representation transfer}
+
+Kihara et al. trained a convolutional network on local OCT patches in Macular Telangiectasia type 2 and reported an MAE of 3.36 dB and a correlation of 0.78 \cite{Kihara2019}. The difference between its lower training error and higher test error also illustrates the overfitting risk created by a high-capacity model and a small number of patients. In retinitis pigmentosa, Le et al. reported $R^2=0.79$ using a wavelet-based deep network, while Nagasato et al. used an ensemble of pretrained fundus-image networks and obtained rank correlations of approximately 0.68--0.70 for visual-field summaries \cite{Le2024,Ding2023}. These studies support the feasibility of image-based functional estimation, but they use different diseases, inputs, endpoints and validation splits, so their headline values are not direct benchmarks for pointwise MAIA prediction in Usher syndrome.
+
+Pretraining offers one response to limited labelled data. Self-supervised retinal training has shown that useful image representations can be learned from unlabelled OCT volumes, and RETFound demonstrated that a retinal foundation model could transfer to several disease-detection tasks \cite{Gholami2024,Zhou2023RETFound}. Transfer is not guaranteed, however. Loo et al. found that an EZ segmentation model transferred poorly from Macular Telangiectasia to \textit{USH2A} scans until it was retrained on disease-specific data \cite{Loo2022}. A frozen RETFound encoder is therefore a reasonable constrained representation for this thesis, but its success in classification does not establish its value for local regression.
+
+\section{Validation, evaluation and critical gap}
+
+The reviewed evidence was difficult to compare because studies differed in the unit of prediction, use of calibration, outcome range and validation design. The distinction between retinal points and independent participants is especially important. Many points, two eyes and repeated visits can come from one person; a random point-level split would allow closely related observations to appear in both training and test sets and could produce an optimistic estimate of generalisation. Patient-wise splitting in the stronger small-cohort studies informed the participant-grouped validation used here.
+
+No single evaluation measure answers the whole question. MAE expresses average absolute error in the original dB scale, while RMSE gives greater weight to large errors. Correlation measures whether observations and predictions vary together but can remain high when predictions are systematically biased. $R^2$ compares performance with a mean prediction and can be negative in held-out data. Calibration and Bland--Altman analysis add information about systematic under- or over-prediction and agreement across the sensitivity range. These measures need to be interpreted together and with participant-level uncertainty.
+
+The literature therefore supports the biological plausibility of local structure--function modelling and shows that retinal images can contain predictive information. It does not provide direct evidence that OCT can predict pointwise MAIA sensitivity in Usher syndrome under participant-held-out validation. This gap shaped the present study: registration was checked explicitly; observations were reduced to one representation per MAIA point; model complexity was constrained; non-imaging baselines were included; folds were grouped by participant; and error, agreement, calibration and uncertainty were reported together. The full-cohort image analysis addresses the main question, while the smaller boundary-available analysis provides a separate, more interpretable examination of local structural features. Chapter~\ref{chap:methods} describes how these decisions were implemented.
+
+\begin{table}[htbp]
+\centering
+\caption{Selected studies from the literature review and the design lesson carried into this thesis.}
+\label{tab:literature-metrics}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
+\toprule
+Study and disease & Target and approach & Validation/metric reported & Critical relevance to the present study \\
+\midrule
+Lad et al.; Gill et al. (USH2A) & EZ area/width with statistical association or linear regression & $r=0.68$; $R^2=0.717$; no held-out prediction & Establishes disease-specific plausibility, but not unseen-participant pointwise prediction. \\
+Kihara et al. (MacTel2) & CNN from local OCT patches & MAE $=3.36$ dB; patient-level split & Demonstrates feasibility while exposing a large train--test gap and high-capacity overfitting risk. \\
+Pfau et al.; von der Emde et al. (GA/nAMD) & Random forest from layer and intensity features & Patient-wise LOO; MAE $=2.89$ and $2.80$ dB with calibration & Provides interpretable small-sample baselines and supports reporting against a repeatability reference. \\
+Le et al.; Nagasato et al. (RP) & Deep OCT or fundus representations & $R^2=0.79$ or rank correlations; single/external split variants & Shows transferability of the idea, but endpoints and metrics are not directly comparable with local MAIA sensitivity. \\
+Karuntu et al. (RP) & Test--retest reliability of microperimetry & Pointwise CoR $\approx8.6$--$10.2$ dB; mean-sensitivity CoR $<2.5$ dB & Defines the measurement context within which pointwise prediction error should be interpreted. \\
+This thesis & Registered local OCT to pointwise MAIA sensitivity & Participant-grouped nested validation; MAE, RMSE, agreement, calibration and bootstrap uncertainty & Tests whether the reported structure--function signal persists without participant or patch leakage. \\
+\bottomrule
+\end{tabularx}
+\end{table}

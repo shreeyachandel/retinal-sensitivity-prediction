@@ -1,0 +1,99 @@
+% Shared thesis settings. Confirm programme/institution metadata against the
+% final submission requirements before submission.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+% A conventional Times-style academic serif face is used throughout the
+% manuscript. The separate `times` package keeps mathematics on the standard
+% Computer Modern math fonts, avoiding unavailable optional script fonts.
+\usepackage{times}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\usepackage{microtype}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{pdfpages}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{etoolbox}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+% Heading hierarchy: chapter titles are deliberately prominent, with each
+% lower level stepping down in size while remaining visibly distinct from the
+% 12 pt body text.
+% The document class supplies a 12 pt body font; one-and-a-half spacing is set
+% above for readability and consistency with the submission guidance.
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\fontsize{18}{22}\selectfont}
+  {\chaptername\ \thechapter}{0.7em}{}
+\titlespacing*{\chapter}{0pt}{-8pt}{24pt}
+\titleformat{\section}
+  {\normalfont\bfseries\fontsize{15}{18}\selectfont}
+  {\thesection}{0.8em}{}
+\titleformat{\subsection}
+  {\normalfont\bfseries\fontsize{13.5}{16}\selectfont}
+  {\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}
+  {\normalfont\bfseries\fontsize{12}{14.5}\selectfont}
+  {\thesubsubsection}{0.8em}{}
+
+% Captions, tables and footnotes are set at 10 pt as requested.
+\DeclareCaptionFont{thesiscaption}{\fontsize{10}{12}\selectfont}
+\captionsetup{font=thesiscaption,labelfont=bf}
+\AtBeginEnvironment{table}{\fontsize{10}{12}\selectfont}
+\AtBeginEnvironment{tabular}{\fontsize{10}{12}\selectfont}
+\AtBeginEnvironment{tabularx}{\fontsize{10}{12}\selectfont}
+\AtBeginEnvironment{longtable}{\fontsize{10}{12}\selectfont}
+\makeatletter
+\renewcommand{\footnotesize}{\@setfontsize\footnotesize{10}{12}}
+\makeatother
+
+% Keep the initial scaffold compatible with a minimal TeX installation.
+% Replace these with siunitx if a full TeX distribution is used later.
+\newcommand{\SI}[2]{#1~#2}
+\newcommand{\micro}{\ensuremath{\mu}}
+\newcommand{\metre}{m}
+\newcommand{\chapref}[1]{Chapter~\ref{#1}}
+\newcommand{\secref}[1]{Section~\ref{#1}}
+
+\newcommand{\thesistitle}{Predicting Retinal Sensitivity From Optical Coherence Tomography in Usher Syndrome}
+\newcommand{\authorname}{Shreeya Chandel}
+\newcommand{\modulecode}{COMP0192}
+\newcommand{\degreeprogramme}{MSc Artificial Intelligence for Biomedicine and Healthcare}
+\newcommand{\departmentname}{University College London}
+\newcommand{\submissiondate}{August 2026}
+\newcommand{\publiceditiondate}{September 2026}
+
+\hypersetup{
+  pdftitle={Predicting Retinal Sensitivity From Optical Coherence Tomography in Usher Syndrome - Public Edition},
+  pdfauthor={Shreeya Chandel},
+  pdfsubject={Public edition of an MSc dissertation},
+  pdfkeywords={OCT, microperimetry, retinal sensitivity, Usher syndrome, machine learning}
+}
+
+\newcommand{\pending}[1]{\par\noindent\fcolorbox{orange!70!black}{orange!12}{\parbox{0.92\linewidth}{\textbf{Writing prompt.} #1}}\par}
+\newcommand{\resultsgate}{\textbf{Result gate:} Insert model-performance values, rankings, confidence intervals, and final figures only from the validated outputs of the self-contained master reproducibility notebook. Do not use superseded approximately 0.75~mm branch results.}
+\newcommand{\resultpending}[1]{\textit{[Pending validated output: #1]}}
+\newcommand{\tablepending}{\textit{TBC}}
+\newcommand{\figureplaceholder}[3]{%
+  \begin{figure}[htbp]
+    \centering
+    \fcolorbox{gray!70}{gray!10}{\parbox[c][0.22\textheight][c]{0.82\textwidth}{\centering\textbf{Figure slot}\\[0.5em]#1}}
+    \caption{#2}
+    \label{#3}
+  \end{figure}%
+}
+
+\setlist{noitemsep,topsep=0.4em}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}

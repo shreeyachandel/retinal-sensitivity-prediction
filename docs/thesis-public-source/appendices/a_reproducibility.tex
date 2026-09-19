@@ -1,0 +1,28 @@
+\chapter{Guide to the Accompanying Notebook}
+\label{app:reproducibility}
+
+The accompanying public repository contains a sanitised record of the computational workflow used in this thesis. It retains the implementation of data preparation, MAIA--OCT/SLO registration, point-level OCT representation construction, model fitting and evaluation described in Chapter~\ref{chap:methods}. A separate synthetic-data demonstration executes the central participant-grouped modelling and evaluation pattern without clinical inputs.
+
+Clinical data and participant-level outputs are not included. The repository is therefore an inspectable account of the analytical approach and reported outputs rather than a standalone clinical-data package.
+
+\section{Notebook guide}
+
+Table~\ref{tab:notebook-guide} indicates how the main components of the notebook relate to the thesis.
+
+\begin{longtable}{p{0.30\linewidth}p{0.60\linewidth}}
+\caption{Guide to the accompanying notebook.}\label{tab:notebook-guide}\\
+\toprule
+Notebook component & Purpose in the thesis \\
+\midrule
+\endfirsthead
+\toprule
+Notebook component & Purpose in the thesis \\
+\midrule
+\endhead
+Data preparation and cohort definition & Creates the de-identified analytical records and applies the eligibility criteria described in Section~\ref{sec:cohort}. \\
+MAIA--OCT/SLO registration & Implements the spatial mapping and visual quality-control procedure described in Section~\ref{sec:registration}. \\
+Point-level OCT representation & Identifies the local B-scans and constructs the image-derived and boundary-derived predictors described in Sections~\ref{sec:footprint} and~\ref{sec:representations}. \\
+Primary and secondary modelling & Fits the prespecified model ladders using participant-grouped validation, as described in Sections~\ref{sec:models} and~\ref{sec:validation}. \\
+Evaluation and reporting & Calculates the performance measures and produces the tables and figures used in Chapter~\ref{chap:results}. \\
+\bottomrule
+\end{longtable}

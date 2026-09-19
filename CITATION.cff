@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software or discuss this project, please cite it using these metadata."
+title: "Predicting Retinal Sensitivity from Optical Coherence Tomography in Usher Syndrome"
+type: software
+authors:
+  - family-names: Chandel
+    given-names: Shreeya
+repository-code: "https://github.com/shreeyachandel/retinal-sensitivity-prediction"
+license: MIT
+version: 1.0.0
+date-released: 2026-09-19
+abstract: >-
+  Privacy-safe public release of an MSc research project on predicting
+  pointwise retinal sensitivity from OCT, including a redacted dissertation,
+  sanitised research pipeline, aggregate findings and a synthetic demo.
+keywords:
+  - optical coherence tomography
+  - microperimetry
+  - retinal sensitivity
+  - participant-grouped validation
+  - medical imaging

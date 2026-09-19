@@ -1,0 +1,42 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+\section{Study overview}
+
+Usher syndrome is an inherited retinal degenerative condition that combines hearing impairment with vision loss \cite{Whatley2020,Toualbi2020}. Optical coherence tomography (OCT) is an objective imaging scan of retinal structure, whereas microperimetry measures a patient's functional vision: the sensitivity of different retinal points to visual stimuli \cite{Langlo2025,Pfau2021Microperimetry}. This thesis examines a focused structure--function question: whether local information from OCT can be used to estimate the retinal sensitivity measured at the corresponding location by fundus-controlled microperimetry, within an Usher syndrome cohort.
+
+The prediction target is intentionally narrow. At each tested retinal location, the target is to obtain information that permits an estimate for a point not used to train the model, after allowing for variation due to location or average sensitivity. The study aims to investigate the information contained in OCT examinations for research, future monitoring and assessing gene-therapy efficacy, rather than to establish OCT as a replacement for functional testing.
+
+The available dataset contains paired OCT and MAIA microperimetry examinations from people with Usher syndrome. Each microperimetry result comprises 38 sensitivity locations per eye, while the OCT volume contains detailed structural information across the retina. The central methodological task is therefore to establish a defensible spatial correspondence between the two modalities and then evaluate whether the OCT information assigned to each point improves prediction over simple alternatives.
+
+\section{Aim and objectives}
+
+\textbf{Overall aim.} To determine whether, and to what extent, OCT-derived information can predict pointwise retinal sensitivity in a cohort of participants with Usher syndrome, and to evaluate relevant metrics and limits of those predictions.
+
+\textbf{Objectives.}
+\begin{enumerate}
+  \item Critically synthesise the biological, clinical and computational evidence that motivates a structure--function prediction study in Usher syndrome.
+  \item Construct and quality-control spatially matched MAIA--OCT/SLO observations, including registration, point-to-B-scan mapping and point-level pooling within the functional footprint.
+  \item Test whether the primary full-cohort OCT representation improves prediction beyond null, fixed-reference and retinal-location baselines under participant-grouped nested validation.
+  \item Evaluate, in the boundary-available secondary cohort, whether B0--B4 source-mapped structural features and boundary-aligned image representations add predictive information.
+  \item Report complementary measures of error, agreement, calibration and participant-level uncertainty, including the implications of the microperimetry device floor.
+  \item Define the evidential boundary of the findings and the requirements for external, longitudinal or clinical validation.
+\end{enumerate}
+
+\section{Research questions}
+
+\begin{enumerate}[label=\textbf{RQ\arabic*.},leftmargin=*]
+  \item Retinal sensitivity reflects both a point's position in the retinal field and the condition of the local tissue. Geometric and location features may appear predictive without describing retinal biology, while the human-verified boundary features are available only for a smaller cohort. To what extent does biological context from OCT-derived image and boundary features add predictive information beyond geometric context and retinal-location features?
+
+  \item A pointwise structure--function analysis requires each MAIA sensitivity location to be matched to the corresponding area of the OCT volume. MAIA and OCT/SLO examinations use different coordinate systems, and registration or point-to-scan errors can associate a sensitivity value with unrelated retinal tissue. Can the two examinations be registered and quality-controlled so that each MAIA point is assigned to a defensible local OCT region for subsequent modelling?
+
+  \item Existing studies suggest that retinal function can be estimated from structural imaging in several retinal diseases. Their diseases, endpoints, sample sizes, representations and validation procedures differ from those of the present small and heterogeneous Usher syndrome cohort. Can modelling strategies supported by existing structure--function studies provide useful participant-held-out predictions when adapted to the present cohort?
+
+  \item Image-derived representations may capture structural information that is not available from simple features. The available clinical cohort is limited, and source-mapped boundary features are available only for a subset of the observations. Given that large image models can overfit limited clinical data, can a frozen retinal foundation-model representation and constrained regression models make useful predictions for participants not used during training, and what additional information is provided by source-mapped boundary features where these are available?
+
+  \item A more objective estimate of local retinal function could support the study of retinal structure--function relationships. The cohort is small, and points, eyes and visits from the same participant are correlated. Given the need for a more objective estimate of local retinal function, can spatially aligned OCT information improve the prediction of pointwise MAIA sensitivity beyond non-imaging baselines, despite the small cohort and the correlation between points, eyes and visits from the same participant?
+\end{enumerate}
+
+\section{Thesis outline}
+
+Chapter~\ref{chap:introduction} introduces the study, its aim, objectives and research questions. Chapter~\ref{chap:background} presents the biological and clinical context, reviews previous retinal structure--function studies and explains how the evidence informed the project. Chapter~\ref{chap:methods} describes the data, registration, pointwise OCT sampling, primary and secondary analyses, modelling strategy and participant-grouped evaluation. Chapter~\ref{chap:results} reports the cohort, registration outcomes and predictive results for both analyses. Chapter~\ref{chap:discussion} interprets the findings in relation to the research questions and existing evidence, while considering their reliability and clinical meaning. Chapter~\ref{chap:conclusion} summarises the main contribution of the thesis, and Chapter~\ref{chap:future-work} identifies the methodological and clinical work needed before the approach can be evaluated beyond the present cohort.

@@ -1,0 +1,148 @@
+\chapter{Results}
+\label{chap:results}
+
+\section{Primary full-cohort model comparison}
+\label{sec:primary-results}
+
+All five primary models generated one participant-held-out prediction for each of the 2,886 points. The location-plus-RETFound ridge had the lowest MAE at 5.485~dB (95\% CI 4.871--6.177), followed by RETFound-only ridge at 5.652~dB (95\% CI 5.080--6.273). As the location-only ridge achieved an MAE of 7.650~dB (95\% CI 6.829--8.440), adding the image representation was associated with a 2.165~dB reduction in MAE. The combined model had an RMSE of 6.986~dB, a calibration slope of 0.978 and a supplementary $R^2$ of 0.564. Its mean prediction-minus-observation bias was $-0.060$~dB, while the limits of agreement ranged from $-13.754$ to 13.634~dB.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption{Primary all-cohort out-of-fold performance (22 participants, 78 eye-visits and 2,886 points). MAE confidence intervals are participant-bootstrap 95\% intervals. Bias is prediction minus observed sensitivity; $R^2$ is supplementary.}
+\label{tab:primary-performance}
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.11\textwidth}>{\centering\arraybackslash}p{0.13\textwidth}>{\centering\arraybackslash}p{0.19\textwidth}>{\centering\arraybackslash}p{0.08\textwidth}@{}}
+\toprule
+Model & \shortstack{MAE, dB\\(95\% CI)} & \shortstack{RMSE,\\dB} & \shortstack{Bias,\\dB} & \shortstack{95\% limits of\\agreement, dB} & $R^2$ \\
+\midrule
+Training-mean null & 9.346 (8.633--10.104) & 10.596 & 0.004 & $-20.769$ to 20.776 & $-0.004$ \\
+Fixed $-1$~dB reference & 17.076 (13.969--20.166) & 20.086 & $-17.076$ & $-37.809$ to 3.658 & $-2.606$ \\
+Location-only ridge & 7.650 (6.829--8.440) & 9.048 & 0.004 & $-17.732$ to 17.740 & 0.268 \\
+RETFound-only ridge & 5.652 (5.080--6.273) & 7.146 & $-0.245$ & $-14.246$ to 13.755 & 0.543 \\
+Location-plus-RETFound ridge & 5.485 (4.871--6.177) & 6.986 & $-0.060$ & $-13.754$ to 13.634 & 0.564 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:primary-model-comparison} presents the same comparison with the participant-bootstrap intervals. The two image-based ridge models are clearly separated from the location-only and training-mean references, whereas their intervals overlap each other. The location-plus-RETFound ridge therefore has the lowest observed MAE in the primary ladder, but its numerical advantage over RETFound-only ridge is small relative to the uncertainty shown in the figure. The fixed $-1$~dB reference has the highest error and the widest interval, as it assigns the same value to every point regardless of its observed sensitivity or location.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figure_primary_model_comparison.png}
+  \caption{Participant-bootstrap MAE comparison for the five primary models. Lower values indicate lower pointwise error; the location-plus-RETFound ridge is the best primary model by MAE.}
+  \label{fig:primary-model-comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth,height=0.62\textheight,keepaspectratio]{figure_primary_observed_predicted.png}
+  \caption{Observed versus out-of-fold predicted pointwise sensitivity for the primary model ladder. The repeated horizontal accumulation at $-1$~dB reflects the MAIA device floor.}
+  \label{fig:primary-observed-predicted}
+\end{figure}
+
+The observed-versus-predicted panels in Figure~\ref{fig:primary-observed-predicted} show the change in prediction behaviour across the ladder. The training-mean and fixed-reference panels appear as horizontal bands because neither model varies its prediction with the observed point. The location-only model produces several broad horizontal groupings, reflecting the restricted set of predictions available from fixed grid location. In contrast, both RETFound models cover a much wider range of predicted sensitivities and show an upward pattern relative to the diagonal reference line. The location-plus-RETFound model places more of its predictions near this line at the higher observed sensitivities, although substantial vertical spread remains at individual sensitivity values. The dense vertical accumulation at $-1$~dB is visible in each fitted model and corresponds to the device-floor observations.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth,height=0.62\textheight,keepaspectratio]{figure_primary_bland_altman.png}
+  \caption{Bland--Altman plots for the primary model ladder. Differences are prediction minus observed sensitivity.}
+  \label{fig:primary-bland-altman}
+\end{figure}
+
+Figure~\ref{fig:primary-bland-altman} gives the same comparisons on the prediction-minus-observation scale. The two non-imaging references show the expected deterministic diagonal patterns, while the location-only model retains grouped residual bands. The image-based models have residuals distributed on both sides of zero across much of the range, and the location-plus-RETFound ridge is centred close to zero overall. The plot also shows that errors remain dispersed: at the lowest observed values, including the floor, many predictions are above the measured sensitivity, whereas negative residuals are more common at higher observed sensitivities. This visible pattern is consistent with the reported limits of agreement and complements the small overall bias.
+
+\section{Primary error strata and calibration}
+
+Descriptive error differed across the prespecified strata. The location-plus-RETFound ridge had a lower MAE at year one than at baseline (4.998 versus 5.925~dB), although the two visits contained different numbers of participants and points. Error was also higher for observations at the $-1$~dB device floor, where MAE was 8.787~dB, than for observations above the floor, where MAE was 4.737~dB. The floor stratum contained 533 points from 16 participants, whereas the non-floor stratum contained 2,353 points from all 22 participants.
+
+\begin{table}[htbp]
+\centering
+\caption{Location-plus-RETFound ridge error by prespecified stratum. Values are descriptive out-of-fold summaries.}
+\label{tab:primary-strata}
+\begin{tabularx}{\textwidth}{Xrrrr}
+\toprule
+Stratum & Participants & Points & MAE, dB & RMSE, dB \\
+\midrule
+Baseline visit & 22 & 1,517 & 5.925 & 7.534 \\
+Year-one visit & 20 & 1,369 & 4.998 & 6.323 \\
+Sensitivity floor ($-1$~dB) & 16 & 533 & 8.787 & 9.948 \\
+Above sensitivity floor & 22 & 2,353 & 4.737 & 6.119 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The residual plot in Figure~\ref{fig:primary-residuals} makes the floor-related pattern more apparent. For the location-plus-RETFound model, the column of observations at $-1$~dB includes a broad range of positive errors, while the range of residuals remains wider than zero across the middle and upper sensitivity values. This agrees with the stratum summaries in Table~\ref{tab:primary-strata}: the floor group had the largest MAE and RMSE. Figure~\ref{fig:primary-sensitivity-distribution} shows why this group is consequential in the full cohort. There is a pronounced spike at the device floor, alongside a broad concentration of values in the higher-sensitivity range, particularly around 20--27~dB. The endpoint is therefore not evenly distributed across its observed range.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figure_primary_residual_by_sensitivity.png}
+  \caption{Primary residuals stratified by observed sensitivity. The error structure is less favourable at the device floor and at the lowest sensitivities.}
+  \label{fig:primary-residuals}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{figure_primary_sensitivity_distribution.png}
+  \caption{Distribution of observed pointwise MAIA sensitivity in the primary cohort, including the retained $-1$~dB device-floor observations.}
+  \label{fig:primary-sensitivity-distribution}
+\end{figure}
+
+\section{Secondary boundary-informed analysis}
+\label{sec:secondary-results}
+
+The secondary analysis included the boundary-available subset of 22 participants, 50 eye-visits and 1,850 points. It comprised 13 baseline eye-visits (481 points) and 37 year-one eye-visits (1,369 points), with 278 observations recorded at the $-1$~dB floor. Results from this subset are presented separately because the boundary information was unavailable for the remaining primary-cohort eye-visits.
+
+The location-plus-boundary random forest had the lowest MAE in this analysis at 5.054~dB, with an RMSE of 6.540~dB, bias of $-0.626$~dB, limits of agreement from $-13.390$ to 12.137~dB and supplementary $R^2$ of 0.587. The boundary-aligned RETFound ridge had a similar MAE of 5.114~dB and a lower RMSE of 6.421~dB, while its supplementary $R^2$ was 0.602. The location-plus-boundary RETFound fusion achieved an MAE of 5.577~dB.
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\caption{Secondary boundary-available out-of-fold performance (22 participants, 50 eye-visits and 1,850 points). B0--B4 are neutral source-mapped boundary labels; $R^2$ is supplementary.}
+\label{tab:secondary-performance}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\centering\arraybackslash}p{0.18\textwidth}>{\centering\arraybackslash}p{0.11\textwidth}>{\centering\arraybackslash}p{0.13\textwidth}>{\centering\arraybackslash}p{0.19\textwidth}>{\centering\arraybackslash}p{0.08\textwidth}@{}}
+\toprule
+Model & \shortstack{MAE,\\dB} & \shortstack{RMSE,\\dB} & \shortstack{Bias,\\dB} & \shortstack{95\% limits of\\agreement, dB} & $R^2$ \\
+\midrule
+Training-mean null & 8.700 & 10.207 & $-0.005$ & $-20.016$ to 20.007 & $-0.006$ \\
+Fixed $-1$~dB reference & 18.475 & 21.093 & $-18.475$ & $-38.430$ to 1.481 & $-3.294$ \\
+Location-only ridge & 7.236 & 8.718 & $-0.005$ & $-17.097$ to 17.088 & 0.266 \\
+Boundary-only linear regression & 6.718 & 8.236 & $-0.700$ & $-16.788$ to 15.388 & 0.345 \\
+Boundary-only ridge & 6.764 & 8.323 & $-0.661$ & $-16.926$ to 15.605 & 0.331 \\
+Location-plus-boundary ridge & 6.623 & 8.169 & $-0.829$ & $-16.762$ to 15.103 & 0.356 \\
+Location-plus-boundary random forest & 5.054 & 6.540 & $-0.626$ & $-13.390$ to 12.137 & 0.587 \\
+Boundary-aligned RETFound ridge & 5.114 & 6.421 & 0.112 & $-12.475$ to 12.698 & 0.602 \\
+Location-plus-boundary RETFound ridge & 5.577 & 6.958 & $-0.672$ & $-14.249$ to 12.905 & 0.533 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Figure~\ref{fig:secondary-model-comparison} shows that the secondary ladder has a different ordering from the primary ladder. The location-plus-boundary random forest has the lowest MAE, followed closely by the boundary-aligned RETFound ridge. Both are separated from the training-mean and fixed-reference models, while the linear and ridge models based on boundary features occupy an intermediate range. The error bars for the stronger fitted models overlap, so the figure is most useful for showing the overall model grouping and the small numerical separation between the two best secondary models.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figure_secondary_model_comparison.png}
+  \caption{Model comparison for the boundary-available secondary analysis. The random forest is the best model in this restricted subset by MAE.}
+  \label{fig:secondary-model-comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figure_secondary_observed_predicted_readable.png}
+  \caption{Observed versus out-of-fold predicted sensitivity for the nine-model secondary boundary analysis.}
+  \label{fig:secondary-observed-predicted}
+\end{figure}
+
+The observed-versus-predicted panels in Figure~\ref{fig:secondary-observed-predicted} show a similar progression from constant references to models that vary with the recorded sensitivity. The boundary-only linear and ridge models reproduce some of the observed range but retain a large amount of vertical scatter. The random forest and boundary-aligned RETFound models show a more concentrated association with the diagonal line, particularly through the middle and upper sensitivity range. The fusion model remains variable despite including all three predictor blocks. As in the primary analysis, the panels show repeated values at the lower boundary of the outcome range rather than a continuous spread below the device floor.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.99\linewidth]{figure_secondary_bland_altman_readable.png}
+  \caption{Bland--Altman plots for the secondary boundary-informed models.}
+  \label{fig:secondary-bland-altman}
+\end{figure}
+
+The Bland--Altman panels in Figure~\ref{fig:secondary-bland-altman} provide a final view of these secondary differences. The random forest has a modest negative mean bias, whereas the boundary-aligned RETFound ridge is visually more centred around the zero-difference line, which is reflected in its bias of 0.112~dB. Both still show a broad range of pointwise residuals, and the fusion model does not narrow this spread. These plots are descriptive of the boundary-available subset and are presented alongside Table~\ref{tab:secondary-performance}; they are not used to compare this restricted cohort directly with the primary full-cohort analysis.

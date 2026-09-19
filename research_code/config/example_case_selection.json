@@ -1,0 +1,9 @@
+{
+  "description": "Synthetic configuration illustrating the expected case-label format.",
+  "alignment_pilot_case_ids": [
+    "SYNTHETIC-001__R__BL__OCT_V1",
+    "SYNTHETIC-002__L__Y01__OCT_V2"
+  ],
+  "manual_visual_value_overrides": {},
+  "contains_research_data": false
+}

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "retinal-sensitivity-demo"
+version = "1.0.0"
+description = "Synthetic demonstration of participant-grouped retinal sensitivity modelling from OCT."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Shreeya Chandel"}]
+dependencies = [
+  "matplotlib>=3.8",
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "jupyterlab>=4.0",
+]
+
+[project.scripts]
+retinal-demo = "retinal_sensitivity.demo:main"
+
+[project.urls]
+Repository = "https://github.com/shreeyachandel/retinal-sensitivity-prediction"
+Dissertation = "https://github.com/shreeyachandel/retinal-sensitivity-prediction/blob/main/output/pdf/public-thesis.pdf"
+
+[tool.setuptools.packages.find]
+where = ["src"]

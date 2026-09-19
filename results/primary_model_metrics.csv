@@ -1,0 +1,7 @@
+model,n_participants,n_eye_visits,n_points,mae_db,mae_ci95_low,mae_ci95_high,rmse_db,bias_db,lower_loa_db,upper_loa_db,r_squared
+Training-mean null,22,78,2886,9.346,8.633,10.104,10.596,0.004,-20.769,20.776,-0.004
+Fixed -1 dB reference,22,78,2886,17.076,13.969,20.166,20.086,-17.076,-37.809,3.658,-2.606
+Location-only ridge,22,78,2886,7.650,6.829,8.440,9.048,0.004,-17.732,17.740,0.268
+RETFound-only ridge,22,78,2886,5.652,5.080,6.273,7.146,-0.245,-14.246,13.755,0.543
+Location + RETFound ridge,22,78,2886,5.485,4.871,6.177,6.986,-0.060,-13.754,13.634,0.564
+

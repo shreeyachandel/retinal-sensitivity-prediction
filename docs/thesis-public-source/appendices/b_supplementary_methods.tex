@@ -1,0 +1,23 @@
+\chapter{Supplementary Methodological Detail}
+\label{app:supplementary-methods}
+
+This appendix provides additional context for the registration, model configuration and diagnostic assessment reported in Chapter~\ref{chap:methods}.
+
+\section{Registration and spatial quality control}
+
+Figure~\ref{fig:supplementary-qc} shows synthetic registration examples. Each panel illustrates the kinds of scale and orientation variation considered during review and provides visual context for the registration procedure described in Section~\ref{sec:registration}.
+
+\section{Model configuration and validation}
+
+The primary and secondary analyses used separate model ladders because their OCT predictor representations were different. The primary analysis used image-derived representations for the full eligible cohort, whereas the secondary analysis used source-mapped boundary features in the restricted boundary-available cohort. Both analyses retained participant-grouped validation and training-only preprocessing, as described in Sections~\ref{sec:models} and~\ref{sec:validation}.
+
+\section{Extended diagnostic assessment}
+
+In addition to the headline performance measures, the analysis considered calibration, residual distributions, fold-level error and participant-level error. These diagnostic assessments provide context for the model comparisons in Chapter~\ref{chap:results}, particularly as the observations within a participant are correlated. B0--B4 remain neutral source-mapped labels throughout the secondary analysis because their anatomical provenance was not independently verified.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figure_supplementary_qc_public.png}
+  \caption{Supplementary registration schematics using synthetic coordinates and abstract geometric curves.}
+  \label{fig:supplementary-qc}
+\end{figure}
